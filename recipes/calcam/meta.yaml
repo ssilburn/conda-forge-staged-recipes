@@ -1,0 +1,60 @@
+{% set name = "calcam" %}
+{% set version = "2.13.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/euratom-software/calcam/archive/refs/tags/{{ version }}.tar.gz
+  sha256: a72f0fdcfb2615bce30ea852687325fbf281a99830a189b2889e3dd8edaad63c
+
+build:
+  skip: True  # [py<35]
+  script: python -m pip install . -vv
+  entry_points:
+    - calcam = calcam:start_gui
+  number: 0
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python >=3.5
+    - matplotlib-base
+    - opencv
+    - pyqt
+    - scipy
+    - vtk !=9.1.*,>=7
+    - h5py
+    - triangle
+  run_constrained:
+  # Note that libstdcxx-ng >=13 is required for VTK to function correctly.
+  # In my testing on Ubuntu + Anaconda , the default installe version is 11 and 
+  # this causes a crash at runtime (), whereas >=13 works properly.
+    - libstdcxx-ng >=13
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: http://euratom-software.github.io/calcam/html/index.html
+  summary: Spatial calibration tools for science & engineering camera systems (python module + GUI app).
+  dev_url: http://github.com/euratom-software/calcam/
+  doc_url: http://euratom-software.github.io/calcam/html/index.html
+  license: EUPL-1.1
+  license_file: LICENSE.txt
+  
+app:
+  entry: calcam
+  icon: logo.png
+  summary: "The Calcam GUI: spatial calibration tools for science & engineering camera systems."
+
+extra:
+  recipe-maintainers:
+    - ssilburn
+    - munechika-koyo
